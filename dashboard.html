@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>License Plate Alerts</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .delete-btn { color: red; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Detected License Plates</h1>
+
+    <form method="POST">
+        <input type="text" name="search" placeholder="Search Plate..." value="{{ search }}">
+        <input type="date" name="start_date" value="{{ start_date }}">
+        <input type="date" name="end_date" value="{{ end_date }}">
+        <select name="alert_status">
+            <option value="">All Alerts</option>
+            <option value="sent" {% if alert_status=="sent" %}selected{% endif %}>Sent</option>
+            <option value="not_sent" {% if alert_status=="not_sent" %}selected{% endif %}>Not Sent</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Plate Number</th>
+            <th>Timestamp</th>
+            <th>Alert Sent</th>
+            <th>Delete</th>
+        </tr>
+        {% for row in data.itertuples() %}
+        <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.plate_number }}</td>
+            <td>{{ row.timestamp }}</td>
+            <td>{{ "✅" if row.alert_sent else "❌" }}</td>
+            <td><a href="{{ url_for('delete_record', id=row.id) }}" class="delete-btn">X</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
